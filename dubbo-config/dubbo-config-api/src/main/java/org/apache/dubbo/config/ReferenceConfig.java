@@ -216,6 +216,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
             synchronized (this) {
                 if (ref == null) {
+                    // 初始化代理对象
                     init();
                 }
             }
@@ -284,6 +285,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
             serviceMetadata.getAttachments().putAll(referenceParameters);
 
+            // 创建代理
             ref = createProxy(referenceParameters);
 
             serviceMetadata.setTarget(ref);
@@ -409,6 +411,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         if (shouldJvmRefer(referenceParameters)) {
             createInvokerForLocal(referenceParameters);
         } else {
+            // 清空地址
             urls.clear();
             if (StringUtils.isNotEmpty(url)) {
                 // user specified URL, could be peer-to-peer address, or register center's address.
@@ -419,6 +422,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
                     aggregateUrlFromRegistry(referenceParameters);
                 }
             }
+            // 创建调用程序到远程上，注册数据到zk
             createInvokerForRemote();
         }
 
@@ -461,6 +465,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
     /**
      * Parse the directly configured url.
+     * 解析直接配置的url.
      */
     private void parseUrl(Map<String, String> referenceParameters) {
         String[] us = SEMICOLON_SPLIT_PATTERN.split(url);
@@ -514,8 +519,10 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void createInvokerForRemote() {
+        // 注册中心地址如果只有一个，那么只注册到一个上
         if (urls.size() == 1) {
             URL curUrl = urls.get(0);
+            // 触发 Protocol$Adaptive (extName == "register") => 命中 RegistryProtocol#refer
             invoker = protocolSPI.refer(interfaceClass, curUrl);
             if (!UrlUtils.isRegistry(curUrl)) {
                 List<Invoker<?>> invokers = new ArrayList<>();

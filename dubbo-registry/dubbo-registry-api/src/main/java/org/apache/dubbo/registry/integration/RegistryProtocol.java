@@ -390,6 +390,7 @@ public class RegistryProtocol implements Protocol, ScopeModelAware {
      */
     protected Registry getRegistry(final URL registryUrl) {
         RegistryFactory registryFactory = ScopeModelUtil.getExtensionLoader(RegistryFactory.class, registryUrl.getScopeModel()).getAdaptiveExtension();
+        // url的地址携带了 extName = “zookeeper”  由于  getExtensionLoader 的特性，返回的 ZookeeperRegistry 是被 RegistryFactoryWrapper 环绕的
         return registryFactory.getRegistry(registryUrl);
     }
 
@@ -469,6 +470,7 @@ public class RegistryProtocol implements Protocol, ScopeModelAware {
     @SuppressWarnings("unchecked")
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
         url = getRegistryUrl(url);
+        // 根据url 返回响应的注册服务
         Registry registry = getRegistry(url);
         if (RegistryService.class.equals(type)) {
             return proxyFactory.getInvoker((T) registry, type, url);

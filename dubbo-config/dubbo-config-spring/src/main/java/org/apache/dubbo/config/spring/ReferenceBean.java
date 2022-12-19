@@ -319,6 +319,7 @@ public class ReferenceBean<T> implements FactoryBean<T>,
         //set proxy interfaces
         //see also: org.apache.dubbo.rpc.proxy.AbstractProxyFactory.getProxy(org.apache.dubbo.rpc.Invoker<T>, boolean)
         ProxyFactory proxyFactory = new ProxyFactory();
+        // 设置代理源
         proxyFactory.setTargetSource(new DubboReferenceLazyInitTargetSource());
         proxyFactory.addInterface(interfaceClass);
         Class<?>[] internalInterfaces = AbstractProxyFactory.getInternalInterfaces();
@@ -342,7 +343,7 @@ public class ReferenceBean<T> implements FactoryBean<T>,
         if (referenceConfig == null) {
             throw new IllegalStateException("ReferenceBean is not ready yet, please make sure to call reference interface method after dubbo is started.");
         }
-        //get reference proxy
+        //get reference proxy 获取代理对象
         return referenceConfig.get();
     }
 
