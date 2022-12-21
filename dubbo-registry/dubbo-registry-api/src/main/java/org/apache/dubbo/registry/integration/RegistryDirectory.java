@@ -151,13 +151,13 @@ public class RegistryDirectory<T> extends DynamicDirectory<T> {
             .filter(this::isValidCategory)
             .filter(this::isNotCompatibleFor26x)
             .collect(Collectors.groupingBy(this::judgeCategory));
-
+        // 注册 configurators 会判断 protocol 是否为 empty
         List<URL> configuratorURLs = categoryUrls.getOrDefault(CONFIGURATORS_CATEGORY, Collections.emptyList());
         this.configurators = Configurator.toConfigurators(configuratorURLs).orElse(this.configurators);
-
+        // 注册 Routers 会判断 protocol 是否为 empty
         List<URL> routerURLs = categoryUrls.getOrDefault(ROUTERS_CATEGORY, Collections.emptyList());
         toRouters(routerURLs).ifPresent(this::addRouters);
-
+        // 注册 providers 会判断 protocol 是否为 empty
         // providers
         List<URL> providerURLs = categoryUrls.getOrDefault(PROVIDERS_CATEGORY, Collections.emptyList());
 

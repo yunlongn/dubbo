@@ -51,7 +51,7 @@ public class InvocationUtil {
                 bizProfiler = Profiler.start("Receive request. Client invoke begin. ServiceKey: " + serviceKey + " " + "MethodName:" + rpcInvocation.getMethodName());
             }
             rpcInvocation.put(Profiler.PROFILER_KEY, bizProfiler);
-            try {
+            try { //这里调用的是 MigrationInvoker
                 return invoker.invoke(rpcInvocation).recreate();
             } finally {
                 Profiler.release(bizProfiler);
