@@ -26,6 +26,7 @@ import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.registry.Registry;
 import org.apache.dubbo.registry.RegistryFactory;
 import org.apache.dubbo.registry.client.migration.MigrationInvoker;
+import org.apache.dubbo.registry.support.RegistryManager;
 import org.apache.dubbo.rpc.Invocation;
 import org.apache.dubbo.rpc.Invoker;
 import org.apache.dubbo.rpc.Result;
@@ -52,11 +53,13 @@ public class EnvFilter implements ClusterFilter {
         final RegistryFactory registryFactory = invoker.getUrl().getOrDefaultApplicationModel().getExtensionLoader(RegistryFactory.class).getAdaptiveExtension();
         final List<RegistryConfig> registries = applicationModel.getDefaultModule().getConfigManager().getDefaultRegistries();
         final RegistryConfig registryConfig = registries.get(0);
-
+        final RegistryManager registryManager = RegistryManager.getInstance(applicationModel);
         final Registry registryFactoryRegistry = registryFactory.getRegistry(URL.valueOf(registryConfig.getAddress()));
+        final Registry registryFactoryRegistry2 = registryFactory.getRegistry(URL.valueOf(registryConfig.getAddress()));
+        final Registry registryFactoryRegistry3 = registryFactory.getRegistry(URL.valueOf(registryConfig.getAddress()));
         final List<URL> lookup = registryFactoryRegistry.lookup(invoker.getUrl());
         final DubboServiceAddressURL url = (DubboServiceAddressURL) lookup.get(0);
-
+        System.out.println(registryManager);
         return invoker.invoke(invocation);
     }
 
